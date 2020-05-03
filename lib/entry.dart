@@ -1,8 +1,5 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'globals.dart' as global;
-import 'animated_button.dart';
 
 class Entry extends StatefulWidget {
   final Function onTap;
@@ -14,12 +11,12 @@ class Entry extends StatefulWidget {
 }
 
 class _EntryState extends State<Entry> {
-  Key _key = GlobalKey<FormState>();
-  var _currentData = new global.DataEntry();
+  final _key = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _key,
       child: Container(
         height: global.screenSize.height * 0.4,
         width: global.screenSize.width,
@@ -36,7 +33,7 @@ class _EntryState extends State<Entry> {
                   width: 150,
                   child: TextFormField(
                     onSaved: (value) {
-                      _currentData.name = value;
+                      global.currentData.name = value;
                     },
                     decoration: InputDecoration(
                       labelText: "Name",
@@ -50,7 +47,7 @@ class _EntryState extends State<Entry> {
                   width: 150,
                   child: TextFormField(
                     onSaved: (value) {
-                      _currentData.place = value;
+                      global.currentData.place = value;
                     },
                     decoration: InputDecoration(
                       labelText: "Place",
@@ -70,6 +67,9 @@ class _EntryState extends State<Entry> {
                 Container(
                   width: 150,
                   child: TextFormField(
+                    onSaved: (value) {
+                      global.currentData.animal = value;
+                    },
                     decoration: InputDecoration(
                       labelText: "Animal",
                       hoverColor: Colors.white,
@@ -81,6 +81,9 @@ class _EntryState extends State<Entry> {
                 Container(
                   width: 150,
                   child: TextFormField(
+                    onSaved: (value) {
+                      global.currentData.thing = value;
+                    },
                     decoration: InputDecoration(
                       labelText: "Thing",
                       hoverColor: Colors.white,
@@ -110,11 +113,19 @@ class _EntryState extends State<Entry> {
                             ),
                             color: Colors.green,
                             onPressed: () {
+                              for (int i = 0; i < global.data.length; i++) {
+                                print(global.data[i].name);
+                              }
+                              _key.currentState.save();
+                              _key.currentState.reset();
                               setState(() {
+                                global.data.add(global.currentData);
                                 global.loading = !global.loading;
                                 widget.onTap();
                               });
-
+                              for (int i = 0; i < global.data.length; i++) {
+                                print(global.data[i].name);
+                              }
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,

@@ -5,22 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:nameplace/entry.dart';
 import 'globals.dart' as global;
 
-class gamepage extends StatefulWidget {
+class GamePage extends StatefulWidget {
   @override
-  _gamepageState createState() => _gamepageState();
+  _GamePageState createState() => _GamePageState();
 }
 
-class _gamepageState extends State<gamepage>
+class _GamePageState extends State<GamePage>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   bool _reset = true;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _controller =
-        AnimationController(duration: Duration(milliseconds: 100), vsync: this)
+        AnimationController(duration: Duration(milliseconds: 900), vsync: this)
           ..addListener(() {
             setState(() {});
           });
@@ -118,8 +117,13 @@ class _gamepageState extends State<gamepage>
                     },
                   ),
                   Container(
-                    color: Colors.red,
-                    alignment: Alignment.center,
+                    width: global.screenSize.width,
+                    height: 200,
+//                    child: ListView.builder(
+//                        itemCount: global.data.length,
+//                        itemBuilder: (context,index){
+//                          return Text(global.data[index].name + " "+ index.toString());
+//                        }),
                   )
                 ],
               ),
