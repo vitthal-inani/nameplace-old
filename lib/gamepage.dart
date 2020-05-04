@@ -3,38 +3,39 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:nameplace/entry.dart';
-import 'globals.dart' as global;
+import 'package:provider/provider.dart';
+import 'globals.dart';
 
 class GamePage extends StatefulWidget {
   @override
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage>
-    with SingleTickerProviderStateMixin {
+class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   bool _reset = true;
+
+  DataEntry currentData;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _controller =
-        AnimationController(duration: Duration(milliseconds: 900), vsync: this)
-          ..addListener(() {
-            setState(() {});
-          });
+    currentData = DataEntry();
+    _controller = AnimationController(duration: Duration(milliseconds: 900), vsync: this)
+      ..addListener(() {
+        setState(() {});
+      });
     _controller.value = 0;
   }
 
-  void startTimer() async {
-    global.data.add(global.currentData);
-    for(int i=0;i<global.data.length;i++){
-      print(global.data[i].name);
-    }
-    await _controller.animateTo(1,
-        duration: Duration(milliseconds: 900), curve: Curves.easeIn);
-    var timer = Timer(Duration(milliseconds: 0), () {
-      getRandom();
+  void startTimer(GlobalState global) async {
+    global.addDataEntry(currentData);
+    currentData = DataEntry();
+    print(global.data);
+
+    await _controller.animateTo(1, duration: Duration(milliseconds: 900), curve: Curves.easeIn);
+    var timer = Timer(Duration(seconds: 1), () {
+      getRandom(global);
       setState(() {
         global.loading = !global.loading;
       });
@@ -42,26 +43,23 @@ class _GamePageState extends State<GamePage>
     });
   }
 
-  void getRandom() {
-    var randomalpha = String.fromCharCode(Random().nextInt(26) + 65);
-    for (int i = 0; i < global.letters.length; i++) {
-      if (randomalpha == global.letters[i]) {
-        getRandom();
-        return;
-      }
+  void getRandom(GlobalState global) {
+    var randomAlpha = randomLetter();
+    while (global.letters.contains(randomAlpha)) {
+      randomAlpha = randomLetter();
     }
-    global.letters.add(randomalpha);
-    print(global.letters);
+
+    global.addLetter(randomAlpha);
+
     setState(() {
-      global.randomLetter = randomalpha;
-      print(global.randomLetter);
       _controller.value = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    global.screenSize = MediaQuery.of(context).size;
+    var global = Provider.of<GlobalState>(context);
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.blue,
@@ -69,11 +67,11 @@ class _GamePageState extends State<GamePage>
           children: [
             InkWell(
               onTap: () {
-                startTimer();
+                startTimer(global);
               },
               child: Container(
                 alignment: Alignment.center,
-                height: global.screenSize.height * 0.20,
+                height: screenSize.height * 0.20,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -81,14 +79,14 @@ class _GamePageState extends State<GamePage>
                       child: Container(
                         margin: EdgeInsets.only(top: 10),
                         child: Text(
-                          "LETTER : " + global.randomLetter,
+                          "LETTER : " + global.letters.last,
                           style: TextStyle(color: Colors.white, fontSize: 48),
                         ),
                       ),
                     ),
                     Container(
                       height: 10,
-                      width: global.screenSize.width,
+                      width: screenSize.width,
                       child: FractionallySizedBox(
                         heightFactor: 1,
                         widthFactor: _controller.value,
@@ -104,21 +102,21 @@ class _GamePageState extends State<GamePage>
             ),
             Container(
               alignment: Alignment.topLeft,
-              height: global.screenSize.height * 0.78,
+              height: screenSize.height * 0.78,
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30),
-                      topLeft: Radius.circular(30))),
+                      topRight: Radius.circular(30), topLeft: Radius.circular(30))),
               child: Column(
                 children: [
                   Entry(
+                    entry: currentData,
                     onTap: () {
-                      startTimer();
+                      startTimer(global);
                     },
                   ),
                   Container(
-                    width: global.screenSize.width,
+                    width: screenSize.width,
                     height: 200,
 //                    child: ListView.builder(
 //                        itemCount: global.data.length,
