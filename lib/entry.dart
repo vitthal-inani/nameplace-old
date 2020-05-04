@@ -113,19 +113,16 @@ class _EntryState extends State<Entry> {
                             ),
                             color: Colors.green,
                             onPressed: () {
-                              for (int i = 0; i < global.data.length; i++) {
-                                print(global.data[i].name);
+                              if(global.data[0].name == "" && global.data[0].place == ""){
+                                global.data.clear();
                               }
                               _key.currentState.save();
                               _key.currentState.reset();
-                              setState(() {
-                                global.data.add(global.currentData);
+                              setState(() { 
+//                                global.data.add(global.currentData);
                                 global.loading = !global.loading;
                                 widget.onTap();
                               });
-                              for (int i = 0; i < global.data.length; i++) {
-                                print(global.data[i].name);
-                              }
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,

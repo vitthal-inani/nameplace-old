@@ -27,9 +27,10 @@ class _GamePageState extends State<GamePage>
   }
 
   void startTimer() async {
-    setState(() {
-      _reset = true;
-    });
+    global.data.add(global.currentData);
+    for(int i=0;i<global.data.length;i++){
+      print(global.data[i].name);
+    }
     await _controller.animateTo(1,
         duration: Duration(milliseconds: 900), curve: Curves.easeIn);
     var timer = Timer(Duration(milliseconds: 0), () {
