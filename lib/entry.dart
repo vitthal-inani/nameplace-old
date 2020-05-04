@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'globals.dart' as global;
+import 'package:provider/provider.dart';
+import 'globals.dart';
 
 class Entry extends StatefulWidget {
   final Function onTap;
+  final DataEntry entry;
 
-  Entry({this.onTap});
+  Entry({this.onTap, this.entry});
 
   @override
   _EntryState createState() => _EntryState();
@@ -15,11 +17,13 @@ class _EntryState extends State<Entry> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalState global = Provider.of<GlobalState>(context);
+    var screenSize = MediaQuery.of(context).size;
     return Form(
       key: _key,
       child: Container(
-        height: global.screenSize.height * 0.4,
-        width: global.screenSize.width,
+        height: screenSize.height * 0.4,
+        width: screenSize.width,
         margin: EdgeInsets.all(20),
         padding: EdgeInsets.all(20),
         child: Column(
@@ -33,7 +37,7 @@ class _EntryState extends State<Entry> {
                   width: 150,
                   child: TextFormField(
                     onSaved: (value) {
-                      global.currentData.name = value;
+                      widget.entry.name = value;
                     },
                     decoration: InputDecoration(
                       labelText: "Name",
@@ -47,7 +51,7 @@ class _EntryState extends State<Entry> {
                   width: 150,
                   child: TextFormField(
                     onSaved: (value) {
-                      global.currentData.place = value;
+                      widget.entry.place = value;
                     },
                     decoration: InputDecoration(
                       labelText: "Place",
@@ -68,7 +72,7 @@ class _EntryState extends State<Entry> {
                   width: 150,
                   child: TextFormField(
                     onSaved: (value) {
-                      global.currentData.animal = value;
+                      widget.entry.animal = value;
                     },
                     decoration: InputDecoration(
                       labelText: "Animal",
@@ -82,7 +86,7 @@ class _EntryState extends State<Entry> {
                   width: 150,
                   child: TextFormField(
                     onSaved: (value) {
-                      global.currentData.thing = value;
+                      widget.entry.thing = value;
                     },
                     decoration: InputDecoration(
                       labelText: "Thing",
@@ -113,16 +117,16 @@ class _EntryState extends State<Entry> {
                             ),
                             color: Colors.green,
                             onPressed: () {
-                              if(global.data[0].name == "" && global.data[0].place == ""){
-                                global.data.clear();
-                              }
+//                              if (widget.entry.name == "" && widget.entry.place == "") {
+//                                widget.entry;
+//                              }
                               _key.currentState.save();
                               _key.currentState.reset();
-                              setState(() { 
+                              setState(() {
 //                                global.data.add(global.currentData);
                                 global.loading = !global.loading;
-                                widget.onTap();
                               });
+                              widget.onTap();
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,
@@ -130,8 +134,7 @@ class _EntryState extends State<Entry> {
                             ),
                             label: Text(
                               "Submit",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 24),
+                              style: TextStyle(color: Colors.white, fontSize: 24),
                             )),
                       )),
                 ],
