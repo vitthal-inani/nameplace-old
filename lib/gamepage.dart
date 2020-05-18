@@ -1,31 +1,33 @@
 import 'dart:async';
-import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nameplace/entry.dart';
 import 'package:provider/provider.dart';
 import 'globals.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'databaseRef.dart';
 
 class GamePage extends StatefulWidget {
   @override
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
+class _GamePageState extends State<GamePage>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
-  bool _reset = true;
-
   DataEntry currentData;
+  final databaseRef = Firestore.instance;
 
   @override
   void initState() {
     super.initState();
     currentData = DataEntry();
-    _controller = AnimationController(duration: Duration(milliseconds: 900), vsync: this)
-      ..addListener(() {
-        setState(() {});
-      });
-    _controller.value = 0;
+    _controller =
+        AnimationController(duration: Duration(milliseconds: 900), vsync: this)
+          ..addListener(() {
+            setState(() {});
+          });
+    _controller.value = 1;
   }
 
   void startTimer(GlobalState global) async {
@@ -33,12 +35,11 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
     currentData = DataEntry();
     print(global.data);
 
-    await _controller.animateTo(1, duration: Duration(milliseconds: 900), curve: Curves.easeIn);
-    var timer = Timer(Duration(seconds: 1), () {
+    await _controller.animateTo(0,
+        duration: Duration(milliseconds: 900), curve: Curves.easeIn);
+    var timer = Timer(Duration(milliseconds: 20), () {
       getRandom(global);
-      setState(() {
-        global.loading = !global.loading;
-      });
+      global.loading = !global.loading;
       return;
     });
   }
@@ -52,7 +53,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
     global.addLetter(randomAlpha);
 
     setState(() {
-      _controller.value = 0;
+      _controller.value = 1;
     });
   }
 
@@ -106,24 +107,152 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30), topLeft: Radius.circular(30))),
+                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(30))),
               child: Column(
                 children: [
                   Entry(
                     entry: currentData,
-                    onTap: () {
+                    onTap: () async {
+                      global.loading = true;
                       startTimer(global);
+                      addEntry(context);
                     },
                   ),
                   Container(
-                    width: screenSize.width,
-                    height: 200,
-//                    child: ListView.builder(
-//                        itemCount: global.data.length,
-//                        itemBuilder: (context,index){
-//                          return Text(global.data[index].name + " "+ index.toString());
-//                        }),
-                  )
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: screenSize.width / 6.3,
+                          child: Center(
+                            child: Text(
+                              "Name",
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenSize.width / 6.3,
+                          child: Center(
+                            child: Text(
+                              "Place",
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenSize.width / 6.3,
+                          child: Center(
+                            child: Text(
+                              "Animal",
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenSize.width / 6.3,
+                          child: Center(
+                            child: Text(
+                              "Thing",
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenSize.width / 6.3,
+                          child: Center(
+                            child: Text(
+                              "Score",
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                      height: screenSize.height * 0.20,
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: ListView.builder(
+                          itemCount: global.data.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.symmetric(vertical: BorderSide(color: Colors.black))
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: screenSize.width / 6.3,
+                                    child: Center(
+                                      child: Text(
+                                        global.data[index].name,
+                                        style: TextStyle(fontSize: 19),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: screenSize.width / 6.3,
+                                    child: Center(
+                                      child: Text(
+                                        global.data[index].place,
+                                        style: TextStyle(fontSize: 19),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: screenSize.width / 6.3,
+                                    child: Center(
+                                      child: Text(
+                                        global.data[index].animal,
+                                        style: TextStyle(fontSize: 19),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: screenSize.width / 6.3,
+                                    child: Center(
+                                      child: Text(
+                                        global.data[index].thing,
+                                        style: TextStyle(fontSize: 19),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: screenSize.width / 6.3,
+                                    child: Center(
+                                      child: Text(
+                                        "Name",
+                                        style: TextStyle(fontSize: 19),
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                    size: 36,
+                                  )
+                                ],
+                              ),
+                            );
+                          }))
                 ],
               ),
             ),

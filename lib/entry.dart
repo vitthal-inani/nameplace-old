@@ -24,78 +24,84 @@ class _EntryState extends State<Entry> {
       child: Container(
         height: screenSize.height * 0.4,
         width: screenSize.width,
-        margin: EdgeInsets.all(20),
-        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.only(top: 30, left: 10,right: 10),
+        padding: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: 150,
-                  child: TextFormField(
-                    onSaved: (value) {
-                      widget.entry.name = value;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Name",
-                      hoverColor: Colors.white,
-                      focusColor: Colors.white,
-                      fillColor: Colors.white,
+                Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    width: 150,
+                    child: TextFormField(
+                      onSaved: (value) {
+                        widget.entry.name = value;
+                      },
+                      decoration: InputDecoration(
+                          hintText: "Name", border: InputBorder.none),
                     ),
                   ),
                 ),
-                Container(
-                  width: 150,
-                  child: TextFormField(
-                    onSaved: (value) {
-                      widget.entry.place = value;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Place",
-                      hoverColor: Colors.white,
-                      focusColor: Colors.white,
-                      fillColor: Colors.white,
+                Spacer(),
+                Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    width: 150,
+                    child: TextFormField(
+                      onSaved: (value) {
+                        widget.entry.place = value;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Place",
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
             Padding(padding: EdgeInsets.all(15)),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: 150,
-                  child: TextFormField(
-                    onSaved: (value) {
-                      widget.entry.animal = value;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Animal",
-                      hoverColor: Colors.white,
-                      focusColor: Colors.white,
-                      fillColor: Colors.white,
+                Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    width: 150,
+                    child: TextFormField(
+                      onSaved: (value) {
+                        widget.entry.animal = value;
+                      },
+                      decoration: InputDecoration(
+                          hintText: "Animal", border: InputBorder.none),
                     ),
                   ),
                 ),
-                Container(
-                  width: 150,
-                  child: TextFormField(
-                    onSaved: (value) {
-                      widget.entry.thing = value;
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Thing",
-                      hoverColor: Colors.white,
-                      focusColor: Colors.white,
-                      fillColor: Colors.white,
+                Spacer(),
+                Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    width: 150,
+                    child: TextFormField(
+                      onSaved: (value) {
+                        widget.entry.thing = value;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Thing",
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
             Container(
@@ -134,7 +140,8 @@ class _EntryState extends State<Entry> {
                             ),
                             label: Text(
                               "Submit",
-                              style: TextStyle(color: Colors.white, fontSize: 24),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
                             )),
                       )),
                 ],
