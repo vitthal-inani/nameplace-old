@@ -31,15 +31,14 @@ class _GamePageState extends State<GamePage>
   }
 
   void startTimer(GlobalState global) async {
-    global.addDataEntry(currentData);
     currentData = DataEntry();
-    print(global.data);
-
     await _controller.animateTo(0,
         duration: Duration(milliseconds: 900), curve: Curves.easeIn);
     var timer = Timer(Duration(milliseconds: 20), () {
       getRandom(global);
-      global.loading = !global.loading;
+      setState(() {
+        global.loading = !global.loading;
+      });
       return;
     });
   }
@@ -66,39 +65,34 @@ class _GamePageState extends State<GamePage>
         backgroundColor: Colors.blue,
         body: ListView(
           children: [
-            InkWell(
-              onTap: () {
-                startTimer(global);
-              },
-              child: Container(
-                alignment: Alignment.center,
-                height: screenSize.height * 0.20,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: Text(
-                          "LETTER : " + global.letters.last,
-                          style: TextStyle(color: Colors.white, fontSize: 48),
-                        ),
+            Container(
+              alignment: Alignment.center,
+              height: screenSize.height * 0.20,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Center(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: Text(
+                        "LETTER : " + global.letters.last,
+                        style: TextStyle(color: Colors.white, fontSize: 48),
                       ),
                     ),
-                    Container(
-                      height: 10,
-                      width: screenSize.width,
-                      child: FractionallySizedBox(
-                        heightFactor: 1,
-                        widthFactor: _controller.value,
-                        child: Container(
-                          alignment: Alignment.center,
-                          color: Colors.redAccent,
-                        ),
+                  ),
+                  Container(
+                    height: 10,
+                    width: screenSize.width,
+                    child: FractionallySizedBox(
+                      heightFactor: 1,
+                      widthFactor: _controller.value,
+                      child: Container(
+                        alignment: Alignment.center,
+                        color: Colors.redAccent,
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
             ),
             Container(
@@ -113,10 +107,14 @@ class _GamePageState extends State<GamePage>
                 children: [
                   Entry(
                     entry: currentData,
-                    onTap: () async {
+                    onTapSubmit: () async {
                       global.loading = true;
-                      startTimer(global);
                       addEntry(context);
+                      global.addDataEntry(currentData);
+                    },
+                    onTapNext: () {
+                      global.loading = !global.loading;
+                      startTimer(global);
                     },
                   ),
                   Container(
@@ -194,8 +192,9 @@ class _GamePageState extends State<GamePage>
                           itemBuilder: (context, index) {
                             return Container(
                               decoration: BoxDecoration(
-                                border: Border.symmetric(vertical: BorderSide(color: Colors.black))
-                              ),
+                                  border: Border.symmetric(
+                                      vertical:
+                                          BorderSide(color: Colors.black))),
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Row(
                                 children: [

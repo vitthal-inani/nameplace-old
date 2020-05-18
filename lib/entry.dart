@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 import 'globals.dart';
 
 class Entry extends StatefulWidget {
-  final Function onTap;
+  final Function onTapSubmit;
+  final Function onTapNext;
   final DataEntry entry;
 
-  Entry({this.onTap, this.entry});
+  Entry({this.onTapSubmit, this.onTapNext, this.entry});
 
   @override
   _EntryState createState() => _EntryState();
@@ -24,7 +25,7 @@ class _EntryState extends State<Entry> {
       child: Container(
         height: screenSize.height * 0.4,
         width: screenSize.width,
-        margin: EdgeInsets.only(top: 30, left: 10,right: 10),
+        margin: EdgeInsets.only(top: 30, left: 10, right: 10),
         padding: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -109,6 +110,34 @@ class _EntryState extends State<Entry> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                      alignment: Alignment.bottomRight,
+                      margin: EdgeInsets.only(top: 20),
+                      child: Material(
+                        elevation: 5,
+                        borderRadius: BorderRadius.circular(30),
+                        color: Colors.green,
+                        child: FlatButton.icon(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            color: Colors.green,
+                            onPressed: () {
+                              setState(() {
+                                global.loading = !global.loading;
+                              });
+                              widget.onTapNext();
+                            },
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white,
+                            ),
+                            label: Text(
+                              "Next",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
+                            )),
+                      )),
                   (global.loading) ? CircularProgressIndicator() : Container(),
                   Container(
                       alignment: Alignment.bottomRight,
@@ -123,16 +152,12 @@ class _EntryState extends State<Entry> {
                             ),
                             color: Colors.green,
                             onPressed: () {
-//                              if (widget.entry.name == "" && widget.entry.place == "") {
-//                                widget.entry;
-//                              }
                               _key.currentState.save();
                               _key.currentState.reset();
                               setState(() {
-//                                global.data.add(global.currentData);
                                 global.loading = !global.loading;
                               });
-                              widget.onTap();
+                              widget.onTapSubmit();
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,

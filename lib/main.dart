@@ -54,16 +54,38 @@ class MyApp extends StatelessWidget {
                             ),
                             Spacer(),
                             RaisedButton(
-                              child: Text(
-                                "Enter",
-                                style: TextStyle(
-                                    fontSize: 28, color: Colors.white),
+                              elevation: 10,
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  "Enter",
+                                  style: TextStyle(
+                                      fontSize: 28, color: Colors.white),
+                                ),
                               ),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40)),
                               onPressed: () {
                                 if (_key.currentState.validate()) {
                                   _key.currentState.save();
+                                  if (roomname == "") {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("No Room"),
+                                            elevation: 10,
+                                            actions: [
+                                              FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("OK"))
+                                            ],
+                                          );
+                                        });
+                                    return;
+                                  }
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -75,13 +97,49 @@ class MyApp extends StatelessWidget {
                             Spacer(),
                             Row(
                               children: [
-                                RaisedButton(onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return JoinRoom();
-                                      });
-                                })
+                                RaisedButton(
+                                  elevation: 20,
+                                  color: Colors.blue,
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(
+                                      "Join",
+                                      style: TextStyle(
+                                        fontSize: 28,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return JoinRoom();
+                                        });
+                                  },
+                                ),
+                                Spacer(),
+                                RaisedButton(
+                                  elevation: 20,
+                                  color: Colors.blue,
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    child: Text(
+                                      "Create",
+                                      style: TextStyle(
+                                        fontSize: 28,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return CreateRoom();
+                                        });
+                                  },
+                                )
                               ],
                             ),
                           ],

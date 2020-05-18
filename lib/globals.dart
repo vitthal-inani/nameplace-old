@@ -2,7 +2,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 
 String randomLetter() => String.fromCharCode(Random().nextInt(26) + 65);
-String roomname;
+String roomname = "";
+bool admin = false, submitted=false;
 
 class GlobalState with ChangeNotifier {
   bool _loading;

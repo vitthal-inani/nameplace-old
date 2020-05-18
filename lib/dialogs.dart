@@ -101,7 +101,7 @@ class CreateRoom extends StatefulWidget {
 
 class _CreateRoomState extends State<CreateRoom> {
   final _key = GlobalKey<FormState>();
-  bool _loading = false;
+  int _state = 0;
   String roomName;
   String warning;
   final firestore = Firestore.instance;
@@ -150,26 +150,43 @@ class _CreateRoomState extends State<CreateRoom> {
                       if (_key.currentState.validate()) {
                         _key.currentState.save();
                         setState(() {
-                          _loading = true;
+                          _state = 1;
                         });
-                        final snapshot =
-                            await firestore.collection(roomName).document("");
-//                        if (snapshot.documents.length == 0) {
-//                          setState(() {
-//                            warning = "Room doesnt Exist";
-//                            _loading = false;
-//                          });
-//                          }
-//                          else {
-//                          globals.roomname = roomName;
-//                          Navigator.pop(context);
-//                        }
+                        final check =
+                            await firestore.collection(roomName).getDocuments();
+                        if(check.documents.length > 0){
+                          setState(() {
+                            warning = "Already Exists";
+                            _state = 0;
+                          });
+                          return ;
+                        }
+                        globals.roomname = roomName;
+                        final snapshot = await firestore
+                            .collection(roomName)
+                            .add({'title': '1'});
+                        setState(() {
+                          _state = 2;
+                        });
+                        Navigator.pop(context);
                       }
                     },
                     color: Colors.blue,
                   ),
                   Spacer(),
-                  (_loading) ? CircularProgressIndicator() : Container(),
+                  Builder(builder: (context) {
+                    if (_state == 1) {
+                      return CircularProgressIndicator();
+                    } else if (_state == 2) {
+                      globals.admin = true;
+                      return Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 48,
+                      );
+                    }
+                    return Container();
+                  })
                 ],
               ),
               Spacer(),
