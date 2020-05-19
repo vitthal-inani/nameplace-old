@@ -5,12 +5,19 @@ import 'package:provider/provider.dart';
 
 final databaseRef = Firestore.instance;
 
-void addEntry(BuildContext context) async {
+void addEntry(BuildContext context) {
   final global = Provider.of<GlobalState>(context,listen: false);
-  await databaseRef.collection(roomname).document(global.name).setData(({
+  databaseRef.collection(roomname).document(global.name).setData(({
         'name': global.data.last.name,
         'place': global.data.last.place,
         'animal': global.data.last.animal,
         'thing': global.data.last.thing
       }));
+}
+String getLetter(BuildContext context){
+    final global = Provider.of<GlobalState>(context,listen: false);
+    DocumentReference docref = databaseRef.collection(roomname).document("letter");
+    docref.snapshots().listen((event) {
+      print(event.data);
+    });
 }

@@ -21,6 +21,9 @@ class _GamePageState extends State<GamePage>
   @override
   void initState() {
     super.initState();
+    if(admin){
+      getLetter(context);
+    }
     currentData = DataEntry();
     _controller =
         AnimationController(duration: Duration(milliseconds: 900), vsync: this)
@@ -48,7 +51,7 @@ class _GamePageState extends State<GamePage>
     while (global.letters.contains(randomAlpha)) {
       randomAlpha = randomLetter();
     }
-
+    databaseRef.collection(roomname).document("letter").setData({'letter':randomAlpha});
     global.addLetter(randomAlpha);
 
     setState(() {
@@ -109,7 +112,6 @@ class _GamePageState extends State<GamePage>
                     entry: currentData,
                     onTapSubmit: () async {
                       global.loading = true;
-                      addEntry(context);
                       global.addDataEntry(currentData);
                     },
                     onTapNext: () {

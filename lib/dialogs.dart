@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'globals.dart' as globals;
@@ -16,10 +18,11 @@ class _JoinRoomState extends State<JoinRoom> {
 
   @override
   Widget build(BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
     return Dialog(
       backgroundColor: Colors.white,
       child: Container(
-        height: 300,
+        height: _screenSize.height / 2.6,
         padding: EdgeInsets.all(30),
         child: Form(
           key: _key,
@@ -68,7 +71,10 @@ class _JoinRoomState extends State<JoinRoom> {
                             _loading = false;
                           });
                         } else {
+                          globals.admin = false;
                           globals.roomname = roomName;
+                          DocumentSnapshot doc = await firestore.collection(roomName).document("letter").get();
+                          globals.firstLetter = doc['index'];
                           Navigator.pop(context);
                         }
                       }
@@ -95,6 +101,8 @@ class _JoinRoomState extends State<JoinRoom> {
 }
 
 class CreateRoom extends StatefulWidget {
+  String letter;
+  CreateRoom({this.letter});
   @override
   _CreateRoomState createState() => _CreateRoomState();
 }
@@ -108,10 +116,11 @@ class _CreateRoomState extends State<CreateRoom> {
 
   @override
   Widget build(BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
     return Dialog(
       backgroundColor: Colors.white,
       child: Container(
-        height: 300,
+        height: _screenSize.height / 2.6,
         padding: EdgeInsets.all(30),
         child: Form(
           key: _key,
@@ -154,20 +163,21 @@ class _CreateRoomState extends State<CreateRoom> {
                         });
                         final check =
                             await firestore.collection(roomName).getDocuments();
-                        if(check.documents.length > 0){
+                        if (check.documents.length > 0) {
                           setState(() {
                             warning = "Already Exists";
                             _state = 0;
                           });
-                          return ;
+                          return;
                         }
                         globals.roomname = roomName;
                         final snapshot = await firestore
-                            .collection(roomName)
-                            .add({'title': '1'});
+                            .collection(roomName).document("letter").setData({'letter': widget.letter});
+
                         setState(() {
                           _state = 2;
                         });
+                        globals.firstLetter=widget.letter;
                         Navigator.pop(context);
                       }
                     },

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'gamepage.dart';
 import 'package:provider/provider.dart';
-import 'globals.dart';
+import 'globals.dart' as global;
 import 'dialogs.dart';
 
 void main() {
@@ -14,24 +14,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application
   var name;
   final _key = GlobalKey<FormState>();
-
+  var letter = global.randomLetter();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Builder(builder: (context) {
+        final _screenSize = MediaQuery.of(context).size;
         return Scaffold(
             backgroundColor: Colors.blue,
             body: Center(
               child: Container(
                 alignment: Alignment.center,
-                height: 450,
+                height: _screenSize.height*0.55,
+                width: _screenSize.width*0.9,
                 child: Dialog(
-                    insetPadding: EdgeInsets.all(50),
+                    insetPadding: EdgeInsets.all(_screenSize.height/16),
                     elevation: 10,
                     child: Form(
                       key: _key,
                       child: Padding(
-                        padding: EdgeInsets.all(30),
+                        padding: EdgeInsets.all(_screenSize.height/40),
                         child: Column(
                           children: [
                             Text(
@@ -66,9 +68,10 @@ class MyApp extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40)),
                               onPressed: () {
+                                FocusScope.of(context).unfocus();
                                 if (_key.currentState.validate()) {
                                   _key.currentState.save();
-                                  if (roomname == "") {
+                                  if (global.roomname == "") {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
@@ -89,7 +92,7 @@ class MyApp extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => MainApp(name)));
+                                          builder: (context) => MainApp(name,global.firstLetter)));
                                 }
                               },
                               color: Colors.blue,
@@ -110,8 +113,8 @@ class MyApp extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    showDialog(
+                                  onPressed: () async {
+                                    await showDialog(
                                         context: context,
                                         builder: (context) {
                                           return JoinRoom();
@@ -136,7 +139,9 @@ class MyApp extends StatelessWidget {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return CreateRoom();
+                                          return CreateRoom(
+                                            letter:letter,
+                                          );
                                         });
                                   },
                                 )
@@ -155,15 +160,16 @@ class MyApp extends StatelessWidget {
 
 class MainApp extends StatelessWidget {
   final String name;
-
-  MainApp(this.name);
-
+  final String letter;
+  MainApp(this.name,this.letter);
+  final gamepage =GamePage();
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GlobalState>(
+    global.game = gamepage;
+    return ChangeNotifierProvider<global.GlobalState>(
       create: (_) =>
-          GlobalState(false, [randomLetter()], List<DataEntry>(), name),
-      child: Scaffold(body: GamePage()),
+          global.GlobalState(false, [letter], List<global.DataEntry>(), name),
+      child: Scaffold(body: global.game),
     );
   }
 }

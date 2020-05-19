@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'globals.dart';
+import 'databaseRef.dart';
 
 class Entry extends StatefulWidget {
   final Function onTapSubmit;
@@ -110,34 +111,36 @@ class _EntryState extends State<Entry> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                      alignment: Alignment.bottomRight,
-                      margin: EdgeInsets.only(top: 20),
-                      child: Material(
-                        elevation: 5,
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.green,
-                        child: FlatButton.icon(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
+                  (admin)
+                      ? Container(
+                          alignment: Alignment.bottomRight,
+                          margin: EdgeInsets.only(top: 20),
+                          child: Material(
+                            elevation: 5,
+                            borderRadius: BorderRadius.circular(30),
                             color: Colors.green,
-                            onPressed: () {
-                              setState(() {
-                                global.loading = !global.loading;
-                              });
-                              widget.onTapNext();
-                            },
-                            icon: Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.white,
-                            ),
-                            label: Text(
-                              "Next",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 24),
-                            )),
-                      )),
+                            child: FlatButton.icon(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                color: Colors.green,
+                                onPressed: () {
+                                  setState(() {
+                                    global.loading = !global.loading;
+                                  });
+                                  widget.onTapNext();
+                                },
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                ),
+                                label: Text(
+                                  "Next",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 24),
+                                )),
+                          ))
+                      : Container(),
                   (global.loading) ? CircularProgressIndicator() : Container(),
                   Container(
                       alignment: Alignment.bottomRight,
@@ -158,6 +161,7 @@ class _EntryState extends State<Entry> {
                                 global.loading = !global.loading;
                               });
                               widget.onTapSubmit();
+                              addEntry(context);
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,

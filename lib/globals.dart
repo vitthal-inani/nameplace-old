@@ -1,9 +1,12 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
+import 'gamepage.dart';
 
 String randomLetter() => String.fromCharCode(Random().nextInt(26) + 65);
-String roomname = "";
+String roomname = " ";
+String firstLetter=" ";
 bool admin = false, submitted=false;
+GamePage game;
 
 class GlobalState with ChangeNotifier {
   bool _loading;
