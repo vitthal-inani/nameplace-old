@@ -21,8 +21,8 @@ class _GamePageState extends State<GamePage>
   @override
   void initState() {
     super.initState();
-    if(admin){
-      getLetter(context);
+    if(!admin){
+      getLetter(context,nonAdmin);
     }
     currentData = DataEntry();
     _controller =
@@ -32,7 +32,18 @@ class _GamePageState extends State<GamePage>
           });
     _controller.value = 1;
   }
-
+  void getRandom(GlobalState global) {
+    var randomAlpha = randomLetter();
+    while (global.letters.contains(randomAlpha)) {
+      randomAlpha = randomLetter();
+    }
+    databaseRef.collection(roomname).document("letter").setData({'letter':randomAlpha});
+    global.addLetter(randomAlpha);
+    global.wait =false;
+    setState(() {
+      _controller.value = 1;
+    });
+  }
   void startTimer(GlobalState global) async {
     currentData = DataEntry();
     await _controller.animateTo(0,
@@ -45,19 +56,17 @@ class _GamePageState extends State<GamePage>
       return;
     });
   }
-
-  void getRandom(GlobalState global) {
-    var randomAlpha = randomLetter();
-    while (global.letters.contains(randomAlpha)) {
-      randomAlpha = randomLetter();
-    }
-    databaseRef.collection(roomname).document("letter").setData({'letter':randomAlpha});
-    global.addLetter(randomAlpha);
-
+  void nonAdmin(String alpha,GlobalState global) async {
+    currentData = DataEntry();
+    await _controller.animateTo(0,
+        duration: Duration(milliseconds: 900), curve: Curves.easeIn);
+    global.addLetter(alpha);
+    global.wait =false;
     setState(() {
-      _controller.value = 1;
+      _controller.value=1.00;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,16 +117,19 @@ class _GamePageState extends State<GamePage>
                       topLeft: Radius.circular(30))),
               child: Column(
                 children: [
-                  Entry(
-                    entry: currentData,
-                    onTapSubmit: () async {
-                      global.loading = true;
-                      global.addDataEntry(currentData);
-                    },
-                    onTapNext: () {
-                      global.loading = !global.loading;
-                      startTimer(global);
-                    },
+                  IgnorePointer(
+                    ignoring: global.wait,
+                    child: Entry(
+                      entry: currentData,
+                      onTapSubmit: () {
+                        global.loading = true;
+                        global.addDataEntry(currentData);
+                      },
+                      onTapNext: () {
+                        global.loading = !global.loading;
+                        startTimer(global);
+                      },
+                    ),
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),

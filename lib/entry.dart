@@ -16,7 +16,26 @@ class Entry extends StatefulWidget {
 
 class _EntryState extends State<Entry> {
   final _key = GlobalKey<FormState>();
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Submission(context, Submit);
+  }
+  void Submit(GlobalState global){
+    FocusScope.of(context).requestFocus(FocusNode());
+    setState(() {
+      global.wait = true;
+    });
+    _key.currentState.save();
+    _key.currentState.reset();
+    print("here");
+    setState(() {
+      global.loading = !global.loading;
+    });
+    widget.onTapSubmit();
+    addEntry(context);
+  }
   @override
   Widget build(BuildContext context) {
     GlobalState global = Provider.of<GlobalState>(context);
@@ -155,13 +174,7 @@ class _EntryState extends State<Entry> {
                             ),
                             color: Colors.green,
                             onPressed: () {
-                              _key.currentState.save();
-                              _key.currentState.reset();
-                              setState(() {
-                                global.loading = !global.loading;
-                              });
-                              widget.onTapSubmit();
-                              addEntry(context);
+                              Submit(global);
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,

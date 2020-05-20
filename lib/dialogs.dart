@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'globals.dart' as globals;
@@ -73,8 +71,12 @@ class _JoinRoomState extends State<JoinRoom> {
                         } else {
                           globals.admin = false;
                           globals.roomname = roomName;
-                          DocumentSnapshot doc = await firestore.collection(roomName).document("letter").get();
-                          globals.firstLetter = doc['index'];
+                          DocumentSnapshot doc = await firestore
+                              .collection(roomName)
+                              .document("letter")
+                              .get();
+                          globals.firstLetter = doc['letter'];
+                          print(globals.firstLetter);
                           Navigator.pop(context);
                         }
                       }
@@ -101,8 +103,10 @@ class _JoinRoomState extends State<JoinRoom> {
 }
 
 class CreateRoom extends StatefulWidget {
-  String letter;
+  final String letter;
+
   CreateRoom({this.letter});
+
   @override
   _CreateRoomState createState() => _CreateRoomState();
 }
@@ -171,13 +175,15 @@ class _CreateRoomState extends State<CreateRoom> {
                           return;
                         }
                         globals.roomname = roomName;
-                        final snapshot = await firestore
-                            .collection(roomName).document("letter").setData({'letter': widget.letter});
+                        await firestore
+                            .collection(roomName)
+                            .document("letter")
+                            .setData({'letter': widget.letter,'submit':0});
 
                         setState(() {
                           _state = 2;
                         });
-                        globals.firstLetter=widget.letter;
+                        globals.firstLetter = widget.letter;
                         Navigator.pop(context);
                       }
                     },

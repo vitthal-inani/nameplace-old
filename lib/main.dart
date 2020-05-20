@@ -68,6 +68,7 @@ class MyApp extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40)),
                               onPressed: () {
+                                print(global.roomname.isEmpty);
                                 FocusScope.of(context).unfocus();
                                 if (_key.currentState.validate()) {
                                   _key.currentState.save();
@@ -162,13 +163,12 @@ class MainApp extends StatelessWidget {
   final String name;
   final String letter;
   MainApp(this.name,this.letter);
-  final gamepage =GamePage();
   @override
   Widget build(BuildContext context) {
-    global.game = gamepage;
+    global.game = GamePage();
     return ChangeNotifierProvider<global.GlobalState>(
       create: (_) =>
-          global.GlobalState(false, [letter], List<global.DataEntry>(), name),
+          global.GlobalState(false, [letter], List<global.DataEntry>(), name,false),
       child: Scaffold(body: global.game),
     );
   }
