@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nameplace/entry.dart';
 import 'package:provider/provider.dart';
+import 'Players.dart';
 import 'globals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'databaseRef.dart';
@@ -21,8 +22,8 @@ class _GamePageState extends State<GamePage>
   @override
   void initState() {
     super.initState();
-    if(!admin){
-      getLetter(context,nonAdmin);
+    if (!admin) {
+      getLetter(context, nonAdmin);
     }
     currentData = DataEntry();
     _controller =
@@ -32,18 +33,23 @@ class _GamePageState extends State<GamePage>
           });
     _controller.value = 1;
   }
+
   void getRandom(GlobalState global) {
     var randomAlpha = randomLetter();
     while (global.letters.contains(randomAlpha)) {
       randomAlpha = randomLetter();
     }
-    databaseRef.collection(roomname).document("letter").setData({'letter':randomAlpha});
+    databaseRef
+        .collection(roomname)
+        .document("letter")
+        .setData({'letter': randomAlpha,'submit':0});
     global.addLetter(randomAlpha);
-    global.wait =false;
+    global.wait = false;
     setState(() {
       _controller.value = 1;
     });
   }
+
   void startTimer(GlobalState global) async {
     currentData = DataEntry();
     await _controller.animateTo(0,
@@ -56,23 +62,41 @@ class _GamePageState extends State<GamePage>
       return;
     });
   }
-  void nonAdmin(String alpha,GlobalState global) async {
+
+  void nonAdmin(String alpha, GlobalState global) async {
     currentData = DataEntry();
     await _controller.animateTo(0,
         duration: Duration(milliseconds: 900), curve: Curves.easeIn);
     global.addLetter(alpha);
-    global.wait =false;
+    global.wait = false;
     setState(() {
-      _controller.value=1.00;
+      _controller.value = 1.00;
     });
+    global.loading = !global.loading;
   }
-
 
   @override
   Widget build(BuildContext context) {
     var global = Provider.of<GlobalState>(context);
     var screenSize = MediaQuery.of(context).size;
+    final _key = GlobalKey<ScaffoldState>();
     return Scaffold(
+        key: _key,
+        appBar: AppBar(
+            elevation: 0,
+            leading: IconButton(
+              onPressed: () {
+                _key.currentState.openDrawer();
+              },
+              icon: Icon(Icons.menu),
+            ),
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Answers"),
+            )),
+        drawer: Drawer(
+          child: OtherPlayer(),
+        ),
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.blue,
         body: ListView(
@@ -117,19 +141,19 @@ class _GamePageState extends State<GamePage>
                       topLeft: Radius.circular(30))),
               child: Column(
                 children: [
-                  IgnorePointer(
-                    ignoring: global.wait,
-                    child: Entry(
-                      entry: currentData,
-                      onTapSubmit: () {
-                        global.loading = true;
-                        global.addDataEntry(currentData);
-                      },
-                      onTapNext: () {
-                        global.loading = !global.loading;
-                        startTimer(global);
-                      },
-                    ),
+                  Entry(
+                    entry: currentData,
+                    onTapSubmit: () {
+                      global.loading = true;
+                      global.addDataEntry(currentData);
+                      setState(() {
+                        global.wait = true;
+                      });
+                    },
+                    onTapNext: () {
+                      global.loading = !global.loading;
+                      startTimer(global);
+                    },
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),

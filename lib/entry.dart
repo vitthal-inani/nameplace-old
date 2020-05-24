@@ -1,12 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'globals.dart';
+import 'globals.dart' as globals;
 import 'databaseRef.dart';
 
 class Entry extends StatefulWidget {
   final Function onTapSubmit;
   final Function onTapNext;
-  final DataEntry entry;
+  final globals.DataEntry entry;
 
   Entry({this.onTapSubmit, this.onTapNext, this.entry});
 
@@ -16,29 +17,26 @@ class Entry extends StatefulWidget {
 
 class _EntryState extends State<Entry> {
   final _key = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Submission(context, Submit);
+    submission(context, submit);
   }
-  void Submit(GlobalState global){
-    FocusScope.of(context).requestFocus(FocusNode());
-    setState(() {
-      global.wait = true;
-    });
+
+  void submit(globals.GlobalState global) {
     _key.currentState.save();
-    _key.currentState.reset();
-    print("here");
     setState(() {
       global.loading = !global.loading;
     });
     widget.onTapSubmit();
     addEntry(context);
   }
+
   @override
   Widget build(BuildContext context) {
-    GlobalState global = Provider.of<GlobalState>(context);
+    globals.GlobalState global = Provider.of<globals.GlobalState>(context);
     var screenSize = MediaQuery.of(context).size;
     return Form(
       key: _key,
@@ -50,87 +48,93 @@ class _EntryState extends State<Entry> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Material(
-                  elevation: 5,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    width: 150,
-                    child: TextFormField(
-                      onSaved: (value) {
-                        widget.entry.name = value;
-                      },
-                      decoration: InputDecoration(
-                          hintText: "Name", border: InputBorder.none),
-                    ),
-                  ),
-                ),
-                Spacer(),
-                Material(
-                  elevation: 5,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    width: 150,
-                    child: TextFormField(
-                      onSaved: (value) {
-                        widget.entry.place = value;
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Place",
-                        border: InputBorder.none,
+            IgnorePointer(
+              ignoring: global.wait,
+              child: Row(
+                children: [
+                  Material(
+                    elevation: 5,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      width: screenSize.width/2.88,
+                      child: TextFormField(
+                        onSaved: (value) {
+                          widget.entry.name = value;
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Name", border: InputBorder.none),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Spacer(),
+                  Material(
+                    elevation: 5,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      width: screenSize.width/2.88,
+                      child: TextFormField(
+                        onSaved: (value) {
+                          widget.entry.place = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Place",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(padding: EdgeInsets.all(15)),
-            Row(
-              children: [
-                Material(
-                  elevation: 5,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    width: 150,
-                    child: TextFormField(
-                      onSaved: (value) {
-                        widget.entry.animal = value;
-                      },
-                      decoration: InputDecoration(
-                          hintText: "Animal", border: InputBorder.none),
-                    ),
-                  ),
-                ),
-                Spacer(),
-                Material(
-                  elevation: 5,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    margin: EdgeInsets.all(10),
-                    width: 150,
-                    child: TextFormField(
-                      onSaved: (value) {
-                        widget.entry.thing = value;
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Thing",
-                        border: InputBorder.none,
+            IgnorePointer(
+              ignoring: global.wait,
+              child: Row(
+                children: [
+                  Material(
+                    elevation: 5,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      width: screenSize.width/2.88,
+                      child: TextFormField(
+                        onSaved: (value) {
+                          widget.entry.animal = value;
+                        },
+                        decoration: InputDecoration(
+                            hintText: "Animal", border: InputBorder.none),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Spacer(),
+                  Material(
+                    elevation: 5,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      width: screenSize.width/2.88,
+                      child: TextFormField(
+                        onSaved: (value) {
+                          widget.entry.thing = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Thing",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Container(
               margin: EdgeInsets.only(top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  (admin)
+                  (globals.admin)
                       ? Container(
                           alignment: Alignment.bottomRight,
                           margin: EdgeInsets.only(top: 20),
@@ -174,7 +178,12 @@ class _EntryState extends State<Entry> {
                             ),
                             color: Colors.green,
                             onPressed: () {
-                              Submit(global);
+                              globals.currentstate = 1;
+                              submit(global);
+                              Firestore.instance
+                                  .collection(globals.roomname)
+                                  .document('letter')
+                                  .updateData({'submit': 1});
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,

@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
                                 child: Text(
                                   "Enter",
                                   style: TextStyle(
-                                      fontSize: 28, color: Colors.white),
+                                      fontSize: _screenSize.height/25.5, color: Colors.white),
                                 ),
                               ),
                               shape: RoundedRectangleBorder(
@@ -109,7 +109,7 @@ class MyApp extends StatelessWidget {
                                     child: Text(
                                       "Join",
                                       style: TextStyle(
-                                        fontSize: 28,
+                                        fontSize: _screenSize.height/32.5,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -131,7 +131,7 @@ class MyApp extends StatelessWidget {
                                     child: Text(
                                       "Create",
                                       style: TextStyle(
-                                        fontSize: 28,
+                                        fontSize: _screenSize.height/32.5,
                                         color: Colors.white,
                                       ),
                                     ),
