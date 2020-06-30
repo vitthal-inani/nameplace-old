@@ -7,6 +7,7 @@ import 'Players.dart';
 import 'globals.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'databaseRef.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -42,7 +43,7 @@ class _GamePageState extends State<GamePage>
     databaseRef
         .collection(roomname)
         .document("letter")
-        .setData({'letter': randomAlpha,'submit':0});
+        .setData({'letter': randomAlpha, 'submit': 0});
     global.addLetter(randomAlpha);
     global.wait = false;
     setState(() {
@@ -53,7 +54,7 @@ class _GamePageState extends State<GamePage>
   void startTimer(GlobalState global) async {
     currentData = DataEntry();
     await _controller.animateTo(0,
-        duration: Duration(milliseconds: 900), curve: Curves.easeIn);
+        duration: Duration(seconds: 2), curve: Curves.easeInOut);
     var timer = Timer(Duration(milliseconds: 20), () {
       getRandom(global);
       setState(() {
@@ -66,7 +67,7 @@ class _GamePageState extends State<GamePage>
   void nonAdmin(String alpha, GlobalState global) async {
     currentData = DataEntry();
     await _controller.animateTo(0,
-        duration: Duration(milliseconds: 900), curve: Curves.easeIn);
+        duration: Duration(seconds: 2), curve: Curves.easeInOut);
     global.addLetter(alpha);
     global.wait = false;
     setState(() {
@@ -92,7 +93,7 @@ class _GamePageState extends State<GamePage>
             ),
             title: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Answers"),
+              child: Text("Players"),
             )),
         drawer: Drawer(
           child: OtherPlayer(),
@@ -157,6 +158,9 @@ class _GamePageState extends State<GamePage>
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Colors.black,width: 0.5)),
+                    ),
                     child: Row(
                       children: [
                         SizedBox(
@@ -164,10 +168,9 @@ class _GamePageState extends State<GamePage>
                           child: Center(
                             child: Text(
                               "Name",
-                              style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 24,
+                              ),
                             ),
                           ),
                         ),
@@ -176,10 +179,9 @@ class _GamePageState extends State<GamePage>
                           child: Center(
                             child: Text(
                               "Place",
-                              style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 24,
+                              ),
                             ),
                           ),
                         ),
@@ -188,10 +190,9 @@ class _GamePageState extends State<GamePage>
                           child: Center(
                             child: Text(
                               "Animal",
-                              style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 24,
+                              ),
                             ),
                           ),
                         ),
@@ -200,10 +201,9 @@ class _GamePageState extends State<GamePage>
                           child: Center(
                             child: Text(
                               "Thing",
-                              style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 24,
+                              ),
                             ),
                           ),
                         ),
@@ -212,10 +212,9 @@ class _GamePageState extends State<GamePage>
                           child: Center(
                             child: Text(
                               "Score",
-                              style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline),
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 24,
+                              ),
                             ),
                           ),
                         ),
@@ -228,65 +227,73 @@ class _GamePageState extends State<GamePage>
                       child: ListView.builder(
                           itemCount: global.data.length,
                           itemBuilder: (context, index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  border: Border.symmetric(
-                                      vertical:
-                                          BorderSide(color: Colors.black))),
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: screenSize.width / 6.3,
-                                    child: Center(
-                                      child: Text(
-                                        global.data[index].name,
-                                        style: TextStyle(fontSize: 19),
+                            return Material(
+                              elevation: (index % 2 == 0)?5:0,
+                              color: (index % 2 == 1)?Colors.grey.withOpacity(0.4):Colors.white,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(color: Colors.black))),
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: screenSize.width / 6.3,
+                                      child: Center(
+                                        child: Text(
+                                          global.data[index].name,
+                                          style: TextStyle(fontSize: 17),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: screenSize.width / 6.3,
-                                    child: Center(
-                                      child: Text(
-                                        global.data[index].place,
-                                        style: TextStyle(fontSize: 19),
+                                    SizedBox(
+                                      width: screenSize.width / 6.3,
+                                      child: Center(
+                                        child: Text(
+                                          global.data[index].place,
+                                          style: TextStyle(fontSize: 17),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: screenSize.width / 6.3,
-                                    child: Center(
-                                      child: Text(
-                                        global.data[index].animal,
-                                        style: TextStyle(fontSize: 19),
+                                    SizedBox(
+                                      width: screenSize.width / 6.3,
+                                      child: Center(
+                                        child: Text(
+                                          global.data[index].animal,
+                                          style: TextStyle(fontSize: 17),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: screenSize.width / 6.3,
-                                    child: Center(
-                                      child: Text(
-                                        global.data[index].thing,
-                                        style: TextStyle(fontSize: 19),
+                                    SizedBox(
+                                      width: screenSize.width / 6.3,
+                                      child: Center(
+                                        child: Text(
+                                          global.data[index].thing,
+                                          style: TextStyle(fontSize: 17),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: screenSize.width / 6.3,
-                                    child: Center(
-                                      child: Text(
-                                        "Name",
-                                        style: TextStyle(fontSize: 19),
+                                    SizedBox(
+                                      width: screenSize.width / 6.3,
+                                      child: Center(
+                                        child: Text(
+                                          "Name",
+                                          style:
+                                              GoogleFonts.tajawal(fontSize: 17),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                    size: 36,
-                                  )
-                                ],
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                      size: 36,
+                                    )
+                                  ],
+                                ),
                               ),
                             );
                           }))

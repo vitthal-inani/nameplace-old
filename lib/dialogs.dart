@@ -20,15 +20,15 @@ class _JoinRoomState extends State<JoinRoom> {
     return Dialog(
       backgroundColor: Colors.white,
       child: Container(
-        height: _screenSize.height / 2.6,
-        padding: EdgeInsets.all(30),
+        height: _screenSize.height / 3,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Form(
           key: _key,
           child: Column(
             children: [
               Text(
                 "Enter room name",
-                style: TextStyle(fontSize: 32, color: Colors.blue),
+                style: TextStyle(fontSize: 30, color: Colors.blue),
               ),
               TextFormField(
                 validator: (value) {
@@ -43,7 +43,7 @@ class _JoinRoomState extends State<JoinRoom> {
                 },
               ),
               SizedBox(
-                height: 50,
+                height: 25,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +51,9 @@ class _JoinRoomState extends State<JoinRoom> {
                   RaisedButton(
                     child: Text(
                       "Join",
-                      style: TextStyle(fontSize: 32, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: _screenSize.width / 15,
+                          color: Colors.white),
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40)),
@@ -87,7 +89,9 @@ class _JoinRoomState extends State<JoinRoom> {
                   (_loading) ? CircularProgressIndicator() : Container(),
                 ],
               ),
-              Spacer(),
+              SizedBox(
+                height: 20,
+              ),
               (warning != null)
                   ? Text(
                       warning,
@@ -124,15 +128,15 @@ class _CreateRoomState extends State<CreateRoom> {
     return Dialog(
       backgroundColor: Colors.white,
       child: Container(
-        height: _screenSize.height / 2.6,
-        padding: EdgeInsets.all(30),
+        height: _screenSize.height / 3,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Form(
           key: _key,
           child: Column(
             children: [
               Text(
                 "Enter room name",
-                style: TextStyle(fontSize: 32, color: Colors.blue),
+                style: TextStyle(fontSize: 21, color: Colors.blue),
               ),
               TextFormField(
                 validator: (value) {
@@ -147,7 +151,7 @@ class _CreateRoomState extends State<CreateRoom> {
                 },
               ),
               SizedBox(
-                height: 50,
+                height: 25,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +159,9 @@ class _CreateRoomState extends State<CreateRoom> {
                   RaisedButton(
                     child: Text(
                       "Create",
-                      style: TextStyle(fontSize: 32, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: _screenSize.width / 15,
+                          color: Colors.white),
                     ),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40)),
@@ -178,7 +184,7 @@ class _CreateRoomState extends State<CreateRoom> {
                         await firestore
                             .collection(roomName)
                             .document("letter")
-                            .setData({'letter': widget.letter,'submit':0});
+                            .setData({'letter': widget.letter, 'submit': 0});
 
                         setState(() {
                           _state = 2;

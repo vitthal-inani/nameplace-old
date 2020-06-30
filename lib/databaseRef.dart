@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 final databaseRef = Firestore.instance;
 void addEntry(BuildContext context) {
   final global = Provider.of<globals.GlobalState>(context, listen: false);
-  databaseRef.collection(globals.roomname).document(global.name).setData({
+  databaseRef.collection(globals.roomname).document(globals.name).setData({
     'name': global.data.last.name,
     'place': global.data.last.place,
     'animal': global.data.last.animal,
@@ -32,12 +32,10 @@ void submission(BuildContext context, Function function) {
       databaseRef.collection(globals.roomname).document('letter');
   doc.snapshots().listen((event) {
     if (event['submit'] != globals.currentstate) {
-      print(event['submit'].toString() + " " + globals.currentstate.toString());
       if (event['submit'] == 1) {
         function(global);
       }
       globals.currentstate = event['submit'];
-      print(globals.currentstate);
     }
   });
 }
@@ -46,6 +44,6 @@ Future<List> getPlayerData() async {
   QuerySnapshot req =
       await databaseRef.collection(globals.roomname).getDocuments();
   List<DocumentSnapshot> docs = req.documents;
-  docs.removeWhere((element) => element.documentID == 'letter');
+  docs.removeWhere((element) => (element.documentID == 'letter')||(element.documentID == globals.name) );
   return docs;
 }

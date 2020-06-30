@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application
   var name;
   final _key = GlobalKey<FormState>();
-  var letter = global.randomLetter();
+  final letter = global.randomLetter();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -165,11 +165,11 @@ class MainApp extends StatelessWidget {
   MainApp(this.name,this.letter);
   @override
   Widget build(BuildContext context) {
-    global.game = GamePage();
+    global.name = name;
     return ChangeNotifierProvider<global.GlobalState>(
       create: (_) =>
-          global.GlobalState(false, [letter], List<global.DataEntry>(), name,false),
-      child: Scaffold(body: global.game),
+          global.GlobalState(false, [letter], List<global.DataEntry>(),false),
+      child: Scaffold(body: GamePage()),
     );
   }
 }

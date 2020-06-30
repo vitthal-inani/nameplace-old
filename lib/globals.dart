@@ -7,26 +7,20 @@ String randomLetter() => String.fromCharCode(Random().nextInt(26) + 65);
 String roomname = "";
 String firstLetter=" ";
 bool admin = false, submitted=false;
-GamePage game;
 var currentstate = 0;
+String name='';
 
 class GlobalState with ChangeNotifier {
   bool _loading;
   List<String> _letters;
   List<DataEntry> _dataEntryList;
-  String _name;
   bool _wait;
 
   bool get loading => _loading;
   List<String> get letters => _letters;
   List<DataEntry> get data => _dataEntryList;
-  String get name => _name;
   bool get wait => _wait;
 
-  set name(String value){
-    _name = value;
-    notifyListeners();
-  }
   set loading(bool value) {
     _loading = value;
     notifyListeners();
@@ -46,7 +40,7 @@ class GlobalState with ChangeNotifier {
     notifyListeners();
   }
 
-  GlobalState(this._loading, this._letters, this._dataEntryList,this._name,this._wait);
+  GlobalState(this._loading, this._letters, this._dataEntryList,this._wait);
 }
 
 class DataEntry {

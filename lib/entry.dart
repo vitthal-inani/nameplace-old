@@ -25,8 +25,16 @@ class _EntryState extends State<Entry> {
     submission(context, submit);
   }
 
-  void submit(globals.GlobalState global) {
+  void submit(globals.GlobalState global) async {
+    DocumentSnapshot docs = await Firestore.instance
+        .collection(globals.roomname)
+        .document('letter')
+        .get();
+    if (docs.data['submit'] == 1) {
+      return;
+    }
     _key.currentState.save();
+    _key.currentState.reset();
     setState(() {
       global.loading = !global.loading;
     });
@@ -41,9 +49,9 @@ class _EntryState extends State<Entry> {
     return Form(
       key: _key,
       child: Container(
-        height: screenSize.height * 0.4,
+        height: screenSize.height * 0.3,
         width: screenSize.width,
-        margin: EdgeInsets.only(top: 30, left: 10, right: 10),
+        margin: EdgeInsets.only(top: 30, bottom: 40, left: 10, right: 10),
         padding: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -57,7 +65,8 @@ class _EntryState extends State<Entry> {
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
                       margin: EdgeInsets.all(10),
-                      width: screenSize.width/2.88,
+                      height: screenSize.height / 21,
+                      width: screenSize.width / 2.88,
                       child: TextFormField(
                         onSaved: (value) {
                           widget.entry.name = value;
@@ -73,7 +82,8 @@ class _EntryState extends State<Entry> {
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
                       margin: EdgeInsets.all(10),
-                      width: screenSize.width/2.88,
+                      height: screenSize.height / 21,
+                      width: screenSize.width / 2.88,
                       child: TextFormField(
                         onSaved: (value) {
                           widget.entry.place = value;
@@ -88,7 +98,7 @@ class _EntryState extends State<Entry> {
                 ],
               ),
             ),
-            Padding(padding: EdgeInsets.all(15)),
+            Spacer(),
             IgnorePointer(
               ignoring: global.wait,
               child: Row(
@@ -98,7 +108,8 @@ class _EntryState extends State<Entry> {
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
                       margin: EdgeInsets.all(10),
-                      width: screenSize.width/2.88,
+                      height: screenSize.height / 21,
+                      width: screenSize.width / 2.88,
                       child: TextFormField(
                         onSaved: (value) {
                           widget.entry.animal = value;
@@ -114,7 +125,8 @@ class _EntryState extends State<Entry> {
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
                       margin: EdgeInsets.all(10),
-                      width: screenSize.width/2.88,
+                      height: screenSize.height / 21,
+                      width: screenSize.width / 2.88,
                       child: TextFormField(
                         onSaved: (value) {
                           widget.entry.thing = value;
@@ -137,7 +149,7 @@ class _EntryState extends State<Entry> {
                   (globals.admin)
                       ? Container(
                           alignment: Alignment.bottomRight,
-                          margin: EdgeInsets.only(top: 20),
+                          margin: EdgeInsets.only(top: 10),
                           child: Material(
                             elevation: 5,
                             borderRadius: BorderRadius.circular(30),
