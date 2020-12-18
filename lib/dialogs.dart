@@ -10,8 +10,8 @@ class JoinRoom extends StatefulWidget {
 class _JoinRoomState extends State<JoinRoom> {
   final _key = GlobalKey<FormState>();
   bool _loading = false;
-  String roomName;
-  String warning;
+  String roomName = "";
+  String warning = "";
   final firestore = Firestore.instance;
 
   @override
@@ -107,7 +107,7 @@ class _JoinRoomState extends State<JoinRoom> {
 }
 
 class CreateRoom extends StatefulWidget {
-  final String letter;
+  String letter = "";
 
   CreateRoom({this.letter});
 

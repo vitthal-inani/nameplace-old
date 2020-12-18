@@ -26,11 +26,11 @@ class _EntryState extends State<Entry> {
   }
 
   void submit(globals.GlobalState global) async {
-    DocumentSnapshot docs = await Firestore.instance
+    DocumentSnapshot docs = await FirebaseFirestore.instance
         .collection(globals.roomname)
-        .document('letter')
+        .doc('letter')
         .get();
-    if (docs.data['submit'] == 1) {
+    if (docs.data()['submit'] == 1) {
       return;
     }
     _key.currentState.save();
