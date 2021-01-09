@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nameplace/entry.dart';
+import 'package:nameplace/main.dart';
 import 'package:provider/provider.dart';
 import 'Players.dart';
 import 'globals.dart';
@@ -18,14 +19,12 @@ class _GamePageState extends State<GamePage>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   DataEntry currentData;
-  final databaseRef = Firestore.instance;
+  final databaseRef = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    if (!admin) {
       getLetter(context, nonAdmin);
-    }
     currentData = DataEntry();
     _controller =
         AnimationController(duration: Duration(milliseconds: 900), vsync: this)
@@ -35,30 +34,26 @@ class _GamePageState extends State<GamePage>
     _controller.value = 1;
   }
 
-  void getRandom(GlobalState global) {
+  void getRandom(GlobalState global,RoomState room) {
     var randomAlpha = randomLetter();
-    while (global.letters.contains(randomAlpha)) {
+    while (global.adletters.contains(randomAlpha)) {
       randomAlpha = randomLetter();
     }
     databaseRef
-        .collection(roomname)
-        .document("letter")
-        .setData({'letter': randomAlpha, 'submit': 0});
-    global.addLetter(randomAlpha);
-    global.wait = false;
-    setState(() {
-      _controller.value = 1;
-    });
+        .collection(room.roomname)
+        .doc("letter")
+        .set({'letter': randomAlpha, 'submit': 0});
+    global.addasLetter(randomAlpha);
   }
 
-  void startTimer(GlobalState global) async {
+  void startTimer(GlobalState global,RoomState room) async {
     currentData = DataEntry();
     await _controller.animateTo(0,
         duration: Duration(seconds: 2), curve: Curves.easeInOut);
     var timer = Timer(Duration(milliseconds: 20), () {
-      getRandom(global);
+      getRandom(global,room);
       setState(() {
-        global.loading = !global.loading;
+        // global.loading = !global.loading;
       });
       return;
     });
@@ -73,28 +68,55 @@ class _GamePageState extends State<GamePage>
     setState(() {
       _controller.value = 1.00;
     });
-    global.loading = !global.loading;
+    // global.loading = !global.loading;
   }
 
   @override
   Widget build(BuildContext context) {
     var global = Provider.of<GlobalState>(context);
+    final room = Provider.of<RoomState>(context);
     var screenSize = MediaQuery.of(context).size;
     final _key = GlobalKey<ScaffoldState>();
     return Scaffold(
         key: _key,
         appBar: AppBar(
-            elevation: 0,
-            leading: IconButton(
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              _key.currentState.openDrawer();
+            },
+            icon: Icon(Icons.menu),
+          ),
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: Text("Players"),
+          ),
+          actions: [
+            FlatButton(
               onPressed: () {
-                _key.currentState.openDrawer();
+                databaseRef.collection(room.roomname).doc(name).delete();
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => MyApp()),
+                    (route) => false);
               },
-              icon: Icon(Icons.menu),
+              child: Row(
+                children: [
+                  Text(
+                    "Leave",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(
+                    Icons.login,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
-            title: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Players"),
-            )),
+          ],
+        ),
         drawer: Drawer(
           child: OtherPlayer(),
         ),
@@ -145,21 +167,22 @@ class _GamePageState extends State<GamePage>
                   Entry(
                     entry: currentData,
                     onTapSubmit: () {
-                      global.loading = true;
+                      // global.loading = true;
                       global.addDataEntry(currentData);
                       setState(() {
                         global.wait = true;
                       });
                     },
                     onTapNext: () {
-                      global.loading = !global.loading;
-                      startTimer(global);
+                      // global.loading = !global.loading;
+                      startTimer(global,room);
                     },
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Colors.black,width: 0.5)),
+                      border: Border(
+                          bottom: BorderSide(color: Colors.black, width: 0.5)),
                     ),
                     child: Row(
                       children: [
@@ -228,12 +251,15 @@ class _GamePageState extends State<GamePage>
                           itemCount: global.data.length,
                           itemBuilder: (context, index) {
                             return Material(
-                              elevation: (index % 2 == 0)?5:0,
-                              color: (index % 2 == 1)?Colors.grey.withOpacity(0.4):Colors.white,
+                              elevation: (index % 2 == 0) ? 5 : 0,
+                              color: (index % 2 == 1)
+                                  ? Colors.grey.withOpacity(0.4)
+                                  : Colors.white,
                               child: Container(
                                 decoration: BoxDecoration(
                                     border: Border(
-                                        bottom: BorderSide(color: Colors.black))),
+                                        bottom:
+                                            BorderSide(color: Colors.black))),
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 child: Row(
                                   children: [

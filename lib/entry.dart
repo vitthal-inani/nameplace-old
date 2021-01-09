@@ -25,9 +25,9 @@ class _EntryState extends State<Entry> {
     submission(context, submit);
   }
 
-  void submit(globals.GlobalState global) async {
+  void submit(globals.GlobalState global,globals.RoomState room) async {
     DocumentSnapshot docs = await FirebaseFirestore.instance
-        .collection(globals.roomname)
+        .collection(room.roomname)
         .doc('letter')
         .get();
     if (docs.data()['submit'] == 1) {
@@ -36,7 +36,7 @@ class _EntryState extends State<Entry> {
     _key.currentState.save();
     _key.currentState.reset();
     setState(() {
-      global.loading = !global.loading;
+      // global.loading = !global.loading;
     });
     widget.onTapSubmit();
     addEntry(context);
@@ -45,6 +45,7 @@ class _EntryState extends State<Entry> {
   @override
   Widget build(BuildContext context) {
     globals.GlobalState global = Provider.of<globals.GlobalState>(context);
+    final room = Provider.of<globals.RoomState>(context,listen: false);
     var screenSize = MediaQuery.of(context).size;
     return Form(
       key: _key,
@@ -161,7 +162,7 @@ class _EntryState extends State<Entry> {
                                 color: Colors.green,
                                 onPressed: () {
                                   setState(() {
-                                    global.loading = !global.loading;
+                                    // global.loading = !global.loading;
                                   });
                                   widget.onTapNext();
                                 },
@@ -176,7 +177,7 @@ class _EntryState extends State<Entry> {
                                 )),
                           ))
                       : Container(),
-                  (global.loading) ? CircularProgressIndicator() : Container(),
+                  (global.loading ==0) ? CircularProgressIndicator() : Container(),
                   Container(
                       alignment: Alignment.bottomRight,
                       margin: EdgeInsets.only(top: 20),
@@ -191,11 +192,11 @@ class _EntryState extends State<Entry> {
                             color: Colors.green,
                             onPressed: () {
                               globals.currentstate = 1;
-                              submit(global);
-                              Firestore.instance
-                                  .collection(globals.roomname)
-                                  .document('letter')
-                                  .updateData({'submit': 1});
+                              submit(global,room);
+                              FirebaseFirestore.instance
+                                  .collection(room.roomname)
+                                  .doc('letter')
+                                  .update({'submit': 1});
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,

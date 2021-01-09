@@ -24,7 +24,7 @@ class _OtherPlayerState extends State<OtherPlayer> {
           ),
           Spacer(),
           FutureBuilder(
-              future: getPlayerData(),
+              future: getPlayerData(context),
               builder: (context, snapshot) {
                 if (snapshot.data == null) {
                   return Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'globals.dart' as globals;
 
 class JoinRoom extends StatefulWidget {
@@ -12,11 +13,11 @@ class _JoinRoomState extends State<JoinRoom> {
   bool _loading = false;
   String roomName = "";
   String warning = "";
-  final firestore = Firestore.instance;
-
+  final firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
+    final room = Provider.of<globals.RoomState>(context);
     return Dialog(
       backgroundColor: Colors.white,
       child: Container(
@@ -64,18 +65,20 @@ class _JoinRoomState extends State<JoinRoom> {
                           _loading = true;
                         });
                         final snapshot =
-                            await firestore.collection(roomName).getDocuments();
-                        if (snapshot.documents.length == 0) {
+                            await firestore.collection(roomName).get();
+                        if (snapshot.docs.length == 0) {
                           setState(() {
                             warning = "Room doesnt Exist";
                             _loading = false;
                           });
                         } else {
                           globals.admin = false;
-                          globals.roomname = roomName;
+                          setState(() {
+                            room.roomname = roomName;
+                          });
                           DocumentSnapshot doc = await firestore
                               .collection(roomName)
-                              .document("letter")
+                              .doc("letter")
                               .get();
                           globals.firstLetter = doc['letter'];
                           print(globals.firstLetter);
@@ -120,10 +123,11 @@ class _CreateRoomState extends State<CreateRoom> {
   int _state = 0;
   String roomName;
   String warning;
-  final firestore = Firestore.instance;
+  final firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    final room = Provider.of<globals.RoomState>(context);
     final _screenSize = MediaQuery.of(context).size;
     return Dialog(
       backgroundColor: Colors.white,
@@ -172,19 +176,21 @@ class _CreateRoomState extends State<CreateRoom> {
                           _state = 1;
                         });
                         final check =
-                            await firestore.collection(roomName).getDocuments();
-                        if (check.documents.length > 0) {
+                            await firestore.collection(roomName).get();
+                        if (check.docs.length > 0) {
                           setState(() {
                             warning = "Already Exists";
                             _state = 0;
                           });
                           return;
                         }
-                        globals.roomname = roomName;
+                        setState(() {
+                          room.roomname = roomName;
+                        });
                         await firestore
                             .collection(roomName)
-                            .document("letter")
-                            .setData({'letter': widget.letter, 'submit': 0});
+                            .doc("letter")
+                            .set({'letter': widget.letter, 'submit': 0});
 
                         setState(() {
                           _state = 2;
