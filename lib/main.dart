@@ -16,13 +16,11 @@ class MyApp extends StatelessWidget {
       create: (_) => Game(0, ""),
       child: MaterialApp(
         home: Scaffold(
-          backgroundColor: Colors.lightBlueAccent,
           body: FutureBuilder(
             future: Firebase.initializeApp(),
             builder: (context, snapshot) {
               if(snapshot.connectionState == ConnectionState.done)
-                return Center(child: Login());
-
+                return Login();
               return CircularProgressIndicator();
             }
           ),

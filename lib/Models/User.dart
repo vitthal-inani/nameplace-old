@@ -4,7 +4,7 @@ class Game extends ChangeNotifier {
   int _loading;
   User _data;
   String _room;
-  String _letter;
+  String _letter = " ";
 
   int get loading =>_loading;
   User get data => _data;

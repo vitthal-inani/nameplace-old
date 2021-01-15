@@ -45,8 +45,7 @@ class _CreateState extends State<Create> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RaisedButton(
-                    color: Colors.blue,
+                  ElevatedButton(
                     child: Text(
                       "Create",
                       style: TextStyle(color: Colors.white),

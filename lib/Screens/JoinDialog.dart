@@ -17,9 +17,7 @@ class _JoinState extends State<Join> {
 
   @override
   Widget build(BuildContext context) {
-    final _size = MediaQuery
-        .of(context)
-        .size;
+    final _size = MediaQuery.of(context).size;
     Game gamedata = Provider.of<Game>(context);
     return Dialog(
       child: Form(
@@ -33,9 +31,9 @@ class _JoinState extends State<Join> {
             children: [
               Center(
                   child: Text(
-                    "Join",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )),
+                "Join",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              )),
               TextFormField(
                 decoration: InputDecoration(hintText: "Room Name"),
                 validator: (value) {
@@ -51,8 +49,7 @@ class _JoinState extends State<Join> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RaisedButton(
-                    color: Colors.blue,
+                  ElevatedButton(
                     child: Text(
                       "Join",
                       style: TextStyle(color: Colors.white),
@@ -65,7 +62,7 @@ class _JoinState extends State<Join> {
                         });
                       }
                       final snapshot =
-                      await firestore.collection(roomname).get();
+                          await firestore.collection(roomname).get();
                       if (snapshot.docs.length == 0) {
                         setState(() {
                           warning = "Room doesn't exist";
@@ -73,7 +70,9 @@ class _JoinState extends State<Join> {
                         });
                       } else {
                         gamedata.room = roomname;
-                        await firestore.collection(roomname).doc('letter')
+                        await firestore
+                            .collection(roomname)
+                            .doc('letter')
                             .get()
                             .then((value) {
                           gamedata.letter = value.data()['letter'];
