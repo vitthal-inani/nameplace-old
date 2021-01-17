@@ -5,7 +5,7 @@ import 'package:nameplace/Screens/SideDrawer.dart';
 import 'package:nameplace/global.dart';
 import 'package:provider/provider.dart';
 
-import 'Login.dart';d
+import 'Login.dart';
 
 class GamePage extends StatefulWidget {
   @override
