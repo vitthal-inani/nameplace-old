@@ -51,7 +51,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => Login()),
-                    (route) => false);
+                        (route) => false);
               },
               icon: Icon(Icons.exit_to_app),
               label: Text("Exit"))
@@ -77,9 +77,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                   height: _size.height * 0.13,
                   child: (gamedata.letter != "-1")
                       ? Text(
-                          gamedata.letter,
-                          style: TextStyle(fontSize: 54, color: Colors.white),
-                        )
+                    gamedata.letter,
+                    style: TextStyle(fontSize: 54, color: Colors.white),
+                  )
                       : Container(),
                 ),
               ),

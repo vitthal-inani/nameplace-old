@@ -66,6 +66,7 @@ class _CreateState extends State<Create> {
                         });
                       } else {
                         gamedata.room = roomname;
+                        gamedata.letter="-1";
                         await firestore
                             .collection(roomname)
                             .doc('letter')

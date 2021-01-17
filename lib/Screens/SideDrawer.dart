@@ -28,17 +28,22 @@ class _SideDrawerState extends State<SideDrawer> {
               return ListView.builder(
                 itemCount: a.docs.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: ExpansionTile(
-                      title: Text(a.docs[index].id),
-                      collapsedBackgroundColor: Colors.white38,
-                      backgroundColor: Colors.white38,
-                    ),
-                  );
+                  if (a.docs[index].id != "letter")
+                    return Container(
+                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: ExpansionTile(
+                        title: Text(a.docs[index].id),
+                        collapsedBackgroundColor: Colors.white38,
+                        backgroundColor: Colors.white38,
+                        children: [
+                          Text(a.docs[index].data().toString()),
+                        ],
+                      ),
+                    );
+                  return Container();
                 },
               );
             } else
