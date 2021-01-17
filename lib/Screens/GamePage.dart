@@ -51,42 +51,69 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => Login()),
-                        (route) => false);
+                    (route) => false);
               },
               icon: Icon(Icons.exit_to_app),
               label: Text("Exit"))
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
         children: [
-          GestureDetector(
-            onTap: () {
-              Animations.newletter(randomLetter(), context);
-            },
-            child: RotationTransition(
-              turns: Tween(begin: 0.0, end: 1.0).animate(letter),
-              child: Material(
-                elevation: 20,
-                shape: CircleBorder(),
-                color: (gamedata.letter == "-1")
-                    ? Colors.redAccent
-                    : Colors.lightGreen,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: _size.height * 0.13,
-                  child: (gamedata.letter != "-1")
-                      ? Text(
-                    gamedata.letter,
-                    style: TextStyle(fontSize: 54, color: Colors.white),
-                  )
-                      : Container(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Animations.newletter(randomLetter(), context);
+                },
+                child: RotationTransition(
+                  turns: Tween(begin: 0.0, end: 1.0).animate(letter),
+                  child: Material(
+                    elevation: 20,
+                    shape: CircleBorder(),
+                    color: (gamedata.letter == "-1")
+                        ? Colors.redAccent
+                        : Colors.lightGreen,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: _size.height * 0.13,
+                      child: (gamedata.letter != "-1")
+                          ? Text(
+                              gamedata.letter,
+                              style:
+                                  TextStyle(fontSize: 54, color: Colors.white),
+                            )
+                          : Container(),
+                    ),
+                  ),
                 ),
               ),
+              Container(),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            height: _size.height,
+            width: _size.width,
+            child: DraggableScrollableSheet(
+              builder: (context, scrollController) {
+                return SingleChildScrollView(
+                  controller: scrollController,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: _size.height * 0.15,
+                        decoration: BoxDecoration(
+                            color: Colors.deepPurpleAccent,
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(10))),
+                      )
+                    ],
+                  ),
+                );
+              },
             ),
           ),
-          Container(),
-          Container(),
         ],
       ),
     );
